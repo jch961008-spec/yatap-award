@@ -282,30 +282,40 @@
   <main class="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
 
     <!-- Left Control Panel (No Print) -->
-    <aside id="left-aside-panel" class="no-print w-full lg:w-[500px] xl:w-[560px] transition-all duration-200 bg-white border-r border-slate-200 flex flex-col h-auto lg:h-[calc(100vh-61px)] overflow-y-auto">
+    <aside id="left-aside-panel" class="no-print w-full lg:w-[480px] xl:w-[520px] transition-all duration-200 bg-white border-r border-slate-200 flex flex-col h-auto lg:h-[calc(100vh-61px)] overflow-y-auto">
       
       <!-- Tab Navigation -->
       <div class="flex border-b border-slate-200 bg-slate-50 sticky top-0 z-20">
-        <button id="tab-btn-single" onclick="switchTab('single')" class="flex-1 py-3 px-4 text-sm font-bold border-b-2 border-emerald-600 text-emerald-700 bg-white flex items-center justify-center">
-          <i class="fa-solid fa-pen-to-square mr-2"></i> 개별 상장 편집
+        <button id="tab-btn-single" onclick="switchTab('single')" class="flex-1 py-3 px-3 text-sm font-bold border-b-2 border-emerald-600 text-emerald-700 bg-white flex items-center justify-center">
+          <i class="fa-solid fa-gear mr-1.5"></i> 기본 상장 설정
         </button>
-        <button id="tab-btn-batch" onclick="switchTab('batch')" class="flex-1 py-3 px-4 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center justify-center">
-          <i class="fa-solid fa-users mr-2"></i> 학급 일괄 배정 (<span id="batch-count-badge">0</span>명)
+        <button id="tab-btn-batch" onclick="switchTab('batch')" class="flex-1 py-3 px-3 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center justify-center">
+          <i class="fa-solid fa-users mr-1.5"></i> 학급 일괄 배정 (<span id="batch-count-badge">0</span>명)
         </button>
-        <button id="tab-btn-db" onclick="switchTab('db')" class="flex-1 py-3 px-4 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center justify-center">
-          <i class="fa-solid fa-database mr-2"></i> 상장 DB (25종)
+        <button id="tab-btn-db" onclick="switchTab('db')" class="flex-1 py-3 px-3 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center justify-center">
+          <i class="fa-solid fa-database mr-1.5"></i> 상장 DB (25종)
         </button>
       </div>
 
       <div class="p-5 space-y-6 flex-1">
         
-        <!-- TAB 1: Single Certificate Editor -->
+        <!-- TAB 1: Basic Certificate Template Settings (기본 상장 설정) -->
         <div id="tab-content-single" class="space-y-5">
           
-          <!-- Category Quick Selection -->
+          <!-- 안내 배너 -->
+          <div class="bg-slate-800 text-white rounded-xl p-3.5 flex items-center justify-between shadow-sm">
+            <div class="space-y-0.5">
+              <div class="text-xs font-extrabold text-amber-400 flex items-center">
+                <i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i> 상장 공통 양식 및 기본값 설정
+              </div>
+              <p class="text-[11px] text-slate-300 leading-snug">여기서 설정한 학교명, 날짜, 글씨체, 테두리, 직인은 전체 학생 상장에 공통 적용됩니다.</p>
+            </div>
+          </div>
+
+          <!-- Category Quick Selection (샘플 미리보기용) -->
           <div class="bg-emerald-50/70 border border-emerald-200 rounded-xl p-4">
             <label class="block text-xs font-bold text-emerald-800 uppercase tracking-wider mb-2">
-              <i class="fa-solid fa-star mr-1"></i> 꿈나무상 추천 상명 선택 (25종 기본 탑재)
+              <i class="fa-solid fa-star mr-1"></i> 상장 양식 샘플 미리보기 (25종 기본 탑재)
             </label>
             <select id="preset-select" onchange="applyPreset(this.value)" class="w-full bg-white border border-emerald-300 rounded-lg p-2.5 text-sm text-slate-800 font-semibold focus:ring-2 focus:ring-emerald-500 outline-none">
               <!-- Options injected dynamically -->
@@ -318,23 +328,14 @@
 
           <!-- Certificate Basic Details Forms -->
           <div class="space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
-            <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">상장 기본 정보 설정</h3>
+            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center">
+              <i class="fa-solid fa-file-signature mr-1.5 text-emerald-600"></i> 상장 공통 표기 정보 (대제목 · 수여일 · 학교장)
+            </h3>
             
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">상장 호수</label>
-                <input type="text" id="input-doc-num" oninput="updatePreview()" value="제 2026-0001호" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
-              </div>
-              <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">상장 대제목</label>
                 <input type="text" id="input-main-title" oninput="updatePreview()" value="꿈나무상" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-sm font-black text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500">
-              </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">상명 (부문)</label>
-                <input type="text" id="input-sub-title" oninput="updatePreview()" value="나눔상" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-sm font-bold text-emerald-700 outline-none focus:ring-2 focus:ring-emerald-500">
               </div>
               <div>
                 <label class="block text-xs font-semibold text-slate-600 mb-1">성명 라벨 표기</label>
@@ -342,39 +343,54 @@
               </div>
             </div>
 
-            <div class="grid grid-cols-3 gap-3">
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">학년</label>
-                <input type="text" id="input-grade" oninput="updatePreview()" value="6" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">반</label>
-                <input type="text" id="input-class" oninput="updatePreview()" value="1" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">학생 성명</label>
-                <input type="text" id="input-name" oninput="updatePreview()" placeholder="홍길동 (공란가능)" value="홍 길 동" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-sm font-bold text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500">
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1 flex justify-between">
-                <span>상장 수여 본문 문구</span>
-                <span class="text-slate-400 font-normal">오른쪽 화면 클릭 후 바로 수정 가능</span>
-              </label>
-              <textarea id="input-content" oninput="updatePreview()" rows="4" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-sm leading-relaxed outline-none focus:ring-2 focus:ring-emerald-500">위 어린이는 서로 더불어 살며 서로 돕는 어린이로 다른 사람의 모범이 되었으므로 이를 칭찬하여 상장을 수여합니다.</textarea>
-            </div>
-
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">수여 날짜</label>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">수여 날짜 (공통)</label>
                 <input type="text" id="input-date" oninput="updatePreview()" value="2026년 12월 31일" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">수여자 (학교장명)</label>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">수여자 / 학교장명 (공통)</label>
                 <input type="text" id="input-issuer" oninput="updatePreview()" value="야탑초등학교장 홍 순 자" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
               </div>
             </div>
+
+            <!-- 샘플용 단일 상장 정보 (접이식 또는 간소화) -->
+            <details class="group pt-2 border-t border-slate-200">
+              <summary class="text-xs font-bold text-slate-500 cursor-pointer hover:text-emerald-700 flex items-center justify-between list-none">
+                <span><i class="fa-solid fa-user-pen mr-1"></i> 현재 미리보기 샘플 학생/문구 수정 (단독 인쇄용)</span>
+                <i class="fa-solid fa-chevron-down text-[10px] transition-transform group-open:rotate-180"></i>
+              </summary>
+              <div class="mt-3 space-y-3 pt-2 border-t border-dashed border-slate-200">
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">샘플 호수</label>
+                    <input type="text" id="input-doc-num" oninput="updatePreview()" value="제 2026-0001호" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">샘플 상명 (부문)</label>
+                    <input type="text" id="input-sub-title" oninput="updatePreview()" value="나눔상" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-sm font-bold text-emerald-700 outline-none focus:ring-2 focus:ring-emerald-500">
+                  </div>
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">학년</label>
+                    <input type="text" id="input-grade" oninput="updatePreview()" value="6" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">반</label>
+                    <input type="text" id="input-class" oninput="updatePreview()" value="1" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">학생 성명</label>
+                    <input type="text" id="input-name" oninput="updatePreview()" placeholder="홍길동" value="홍 길 동" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-sm font-bold text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500">
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">샘플 수여 본문 문구</label>
+                  <textarea id="input-content" oninput="updatePreview()" rows="3" class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-sm leading-relaxed outline-none focus:ring-2 focus:ring-emerald-500">위 어린이는 서로 더불어 살며 서로 돕는 어린이로 다른 사람의 모범이 되었으므로 이를 칭찬하여 상장을 수여합니다.</textarea>
+                </div>
+              </div>
+            </details>
           </div>
 
           <!-- Styling & Frame Customization (대폭 강화된 글꼴 및 테두리/요소 편집 패널) -->
@@ -655,29 +671,31 @@
                 </select>
               </div>
               <div class="flex items-center space-x-2.5">
-                <label class="inline-flex items-center cursor-pointer text-xs font-bold text-emerald-800 bg-emerald-100/80 px-2.5 py-1 rounded-md border border-emerald-300">
-                  <input type="checkbox" id="toggle-batch-detail" checked onchange="renderStudentTable()" class="rounded text-emerald-600 mr-1.5 w-3.5 h-3.5">
-                  <span>상장 문구 편집창 표시</span>
-                </label>
                 <button onclick="deleteFilteredStudents()" class="text-xs font-medium text-amber-600 hover:text-amber-800 underline">현재 반 삭제</button>
                 <span class="text-slate-300">|</span>
                 <button onclick="clearAllStudents()" class="text-xs font-medium text-red-500 hover:text-red-700 underline">전체 초기화</button>
               </div>
             </div>
 
-            <div class="max-h-[560px] overflow-y-auto border border-slate-300 rounded-xl bg-slate-50/50 shadow-inner">
+            <div class="bg-emerald-50/80 border border-emerald-200 rounded-lg px-3 py-2 text-xs text-emerald-900 flex items-center justify-between">
+              <span><i class="fa-solid fa-hand-pointer text-emerald-600 mr-1.5"></i>학생 행을 클릭하면 오른쪽에 <strong>개별 상장 상세 편집 패널</strong>이 열립니다.</span>
+            </div>
+
+            <div class="max-h-[520px] overflow-y-auto border border-slate-300 rounded-xl bg-white shadow-sm">
               <table class="w-full text-left border-collapse table-fixed">
                 <thead class="bg-slate-800 text-white sticky top-0 z-10 text-xs">
                   <tr>
                     <th class="py-2.5 px-2 w-12 text-center font-bold border-r border-slate-700">번호</th>
-                    <th class="py-2.5 px-3 w-36 text-center font-bold border-r border-slate-700">학급 / 성명</th>
-                    <th class="py-2.5 px-3 font-bold">배정 상명 · 선발 기준 및 수여 문구 (줄·칸 맞춤)</th>
+                    <th class="py-2.5 px-2 w-24 text-center font-bold border-r border-slate-700">학급(반)</th>
+                    <th class="py-2.5 px-3 w-28 text-center font-bold border-r border-slate-700">성명</th>
+                    <th class="py-2.5 px-3 font-bold">배정 상명</th>
+                    <th class="py-2.5 px-2 w-12 text-center font-bold">삭제</th>
                   </tr>
                 </thead>
-                <tbody id="student-table-body" class="divide-y divide-slate-300 bg-white">
+                <tbody id="student-table-body" class="divide-y divide-slate-200 bg-white text-sm">
                   <!-- Dynamic rows -->
                   <tr>
-                    <td colspan="3" class="p-8 text-center text-sm text-slate-400">등록된 학생이 없습니다. 상단에서 학년/반을 선택하고 이름 목록을 입력해 주세요.</td>
+                    <td colspan="5" class="p-8 text-center text-sm text-slate-400">등록된 학생이 없습니다. 상단에서 학년/반을 선택하고 이름 목록을 입력해 주세요.</td>
                   </tr>
                 </tbody>
               </table>
@@ -729,6 +747,143 @@
       <!-- Footer Note -->
       <div class="p-3 bg-slate-100 border-t border-slate-200 text-center text-[11px] text-slate-500">
         ※ 편집한 본문 문구는 웹브라우저에 자동 저장됩니다.
+      </div>
+    </aside>
+
+    <!-- Middle Side-by-Side Student Individual Editor Drawer (학급 일괄 배정에서 학생 선택 시 우측에 추가로 뜨는 개별 상장 편집창) -->
+    <aside id="batch-student-editor-drawer" class="no-print hidden w-full lg:w-[400px] xl:w-[430px] bg-emerald-50/40 border-r border-emerald-200 flex-col h-auto lg:h-[calc(100vh-61px)] overflow-y-auto shadow-xl z-20 transition-all duration-200">
+      <!-- Drawer Header -->
+      <div class="bg-emerald-800 text-white px-4 py-3 flex items-center justify-between sticky top-0 z-20 shadow">
+        <div class="flex items-center space-x-2">
+          <span class="bg-amber-400 text-slate-950 text-xs font-black px-2 py-0.5 rounded" id="drawer-student-badge">선택 학생</span>
+          <h3 class="font-bold text-sm tracking-wide"><span id="drawer-student-title">홍길동</span> 개별 상장 편집</h3>
+        </div>
+        <div class="flex items-center space-x-1">
+          <button onclick="navigateBatchStudent(-1)" class="text-xs bg-emerald-700 hover:bg-emerald-600 px-2 py-1 rounded transition" title="이전 학생">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <button onclick="navigateBatchStudent(1)" class="text-xs bg-emerald-700 hover:bg-emerald-600 px-2 py-1 rounded transition" title="다음 학생">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+          <button onclick="closeBatchStudentEditor()" class="text-xs bg-emerald-950/60 hover:bg-red-600 px-2.5 py-1 rounded ml-1 transition" title="창 닫기">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Drawer Body -->
+      <div class="p-4 space-y-4 flex-1">
+        <div class="bg-white border-2 border-emerald-400 rounded-xl p-3.5 shadow-sm space-y-3">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+            <span class="text-xs font-extrabold text-emerald-800 flex items-center">
+              <i class="fa-solid fa-bolt text-amber-500 mr-1.5"></i> 실시간 상장 연동 편집 중
+            </span>
+            <span class="text-[11px] text-slate-400">입력 즉시 우측 상장에 반영</span>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">학년</label>
+              <input type="text" id="drawer-input-grade" oninput="syncDrawerToStudent()" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-sm font-bold text-center outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">반</label>
+              <input type="text" id="drawer-input-class" oninput="syncDrawerToStudent()" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-sm font-bold text-center text-blue-700 outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">학생 성명</label>
+              <input type="text" id="drawer-input-name" oninput="syncDrawerToStudent()" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-sm font-extrabold text-center text-slate-900 outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-bold text-slate-600 mb-1">상장 호수 (개별 수정 가능)</label>
+            <input type="text" id="drawer-input-docnum" oninput="syncDrawerToStudent()" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-sm font-mono outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500">
+          </div>
+        </div>
+
+        <!-- Award Selection & Criterion -->
+        <div class="bg-white border border-emerald-200 rounded-xl p-3.5 shadow-sm space-y-3">
+          <div>
+            <label class="block text-xs font-extrabold text-emerald-900 mb-1.5">
+              <i class="fa-solid fa-medal text-amber-500 mr-1"></i> 추천 상명 선택 (변경 시 기본문구 자동적용)
+            </label>
+            <select id="drawer-select-award" onchange="changeDrawerAwardPreset(this.value)" class="w-full bg-emerald-50/60 border-2 border-emerald-400 rounded-lg p-2.5 text-sm font-extrabold text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer">
+            </select>
+          </div>
+
+          <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-3">
+            <div class="text-[11px] font-extrabold text-emerald-800 mb-1 flex items-center">
+              <i class="fa-solid fa-circle-check mr-1.5 text-emerald-600"></i> 해당 상명 선발 기준
+            </div>
+            <p id="drawer-criterion-display" class="text-sm font-bold text-emerald-950 leading-snug break-keep">
+              서로 더불어 살며 서로 돕는 어린이
+            </p>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">상장에 인쇄될 상명 (직접 수정 가능)</label>
+            <input type="text" id="drawer-input-subtitle" oninput="syncDrawerToStudent()" class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm font-extrabold text-emerald-800 outline-none focus:ring-2 focus:ring-emerald-500">
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <label class="text-xs font-bold text-slate-700">상장 수여 본문 문구</label>
+              <button onclick="resetDrawerStudentContent()" class="text-[11px] text-emerald-700 hover:underline font-semibold">
+                <i class="fa-solid fa-rotate-left mr-0.5"></i> 기본 문구로 복원
+              </button>
+            </div>
+            <textarea id="drawer-input-content" rows="5" oninput="syncDrawerToStudent()" class="w-full bg-amber-50/30 focus:bg-white border-2 border-slate-300 focus:border-emerald-500 rounded-lg p-3 text-sm font-medium text-slate-900 leading-relaxed outline-none resize-y break-keep"></textarea>
+          </div>
+        </div>
+
+        <!-- Common Date/Issuer Quick Sync -->
+        <div class="bg-white border border-slate-200 rounded-xl p-3.5 shadow-sm space-y-2.5">
+          <div class="text-xs font-bold text-slate-500 uppercase">공통 수여 일자 · 학교장명 · 서체 빠른 변경</div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">수여 날짜</label>
+              <input type="text" id="drawer-input-date" oninput="syncCommonFromDrawer()" class="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 text-xs outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">수여자(학교장)</label>
+              <input type="text" id="drawer-input-issuer" oninput="syncCommonFromDrawer()" class="w-full bg-slate-50 border border-slate-300 rounded px-2.5 py-1.5 text-xs outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500">
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">전체 글씨체</label>
+              <select id="drawer-select-font" onchange="document.getElementById('select-font').value=this.value; changeFont(this.value);" class="w-full bg-slate-50 border border-slate-300 rounded px-2 py-1.5 text-xs outline-none">
+                <option value="font-gungseo">궁서체</option>
+                <option value="font-human-mj">휴먼명조체</option>
+                <option value="font-hcr-batang">함초롬바탕체</option>
+                <option value="font-batang">바탕체</option>
+                <option value="font-nanum" selected>나눔명조</option>
+                <option value="font-maruburi">마루부리</option>
+                <option value="font-noto">본명조</option>
+                <option value="font-gowun">고운바탕</option>
+                <option value="font-hahmlet">함렛체</option>
+                <option value="font-song">송명체</option>
+                <option value="font-yeonsung">연성체</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">테두리 모양</label>
+              <select id="drawer-select-border" onchange="document.getElementById('select-border-style').value=this.value; updateBorderStyle();" class="w-full bg-slate-50 border border-slate-300 rounded px-2 py-1.5 text-xs outline-none">
+                <option value="classic" selected>전통 이중 금테</option>
+                <option value="royal">궁중 격자형</option>
+                <option value="modern">입체 액자형</option>
+                <option value="minimal">깔끔한 2중 단선</option>
+                <option value="rounded">부드러운 라운드형</option>
+                <option value="none">테두리 없음</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <button onclick="window.print()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold py-2.5 rounded-xl text-sm shadow flex items-center justify-center transition">
+          <i class="fa-solid fa-print mr-2"></i> 이 학생 상장만 바로 인쇄
+        </button>
       </div>
     </aside>
 
@@ -879,6 +1034,7 @@
 
     let awardDatabase = [...DEFAULT_AWARDS];
     let studentList = [];
+    let activeBatchStudentId = null;
 
     /* -------------------------------------------------------------
        2. INITIALIZATION & STORAGE
@@ -967,6 +1123,19 @@
 
       // 7. Update Seal Text
       updateSealOptions();
+
+      // 8. 만약 학급 일괄 배정의 개별 편집창이 열려 있다면 실시간 동기화
+      if (activeBatchStudentId !== null) {
+        const target = studentList.find(s => s.id === activeBatchStudentId);
+        if (target) {
+          target.docNum = document.getElementById('input-doc-num').value;
+          target.grade = document.getElementById('input-grade').value;
+          target.classNum = document.getElementById('input-class').value;
+          target.name = document.getElementById('input-name').value.replace(/\s+/g, '');
+          target.customTitle = document.getElementById('input-sub-title').value;
+          target.customContent = document.getElementById('input-content').value;
+        }
+      }
     }
 
     // Two-way Binding: Edits on the live canvas update left inputs
@@ -982,6 +1151,22 @@
       if (field === 'date') document.getElementById('input-date').value = text;
       if (field === 'issuer') document.getElementById('input-issuer').value = text;
       if (field === 'seal') document.getElementById('input-seal-text').value = text.replace(/\n/g, '/');
+
+      // 우측 상장 캔버스에서 직접 글자를 고쳤을 때도 열려있는 학생 편집 드로어와 명단 데이터에 즉시 반영
+      if (activeBatchStudentId !== null) {
+        const target = studentList.find(s => s.id === activeBatchStudentId);
+        if (target) {
+          if (field === 'doc-num') { target.docNum = text; document.getElementById('drawer-input-docnum').value = text; }
+          if (field === 'sub-title') { target.customTitle = text; document.getElementById('drawer-input-subtitle').value = text; }
+          if (field === 'grade') { target.grade = text; document.getElementById('drawer-input-grade').value = text; }
+          if (field === 'class') { target.classNum = text; document.getElementById('drawer-input-class').value = text; }
+          if (field === 'name') { target.name = text.replace(/\s+/g, ''); document.getElementById('drawer-input-name').value = target.name; document.getElementById('drawer-student-title').textContent = target.name; }
+          if (field === 'content') { target.customContent = text; document.getElementById('drawer-input-content').value = text; }
+          if (field === 'date') { document.getElementById('drawer-input-date').value = text; }
+          if (field === 'issuer') { document.getElementById('drawer-input-issuer').value = text; }
+          renderStudentTable();
+        }
+      }
     }
 
     /* -------------------------------------------------------------
@@ -1171,15 +1356,23 @@
       activeBtn.classList.add('border-emerald-600', 'text-emerald-700', 'bg-white');
       activeBtn.classList.remove('border-transparent', 'text-slate-500');
 
-      // 학급 일괄 배정 탭 선택 시 좌측 패널 폭을 넓혀 기준/문구 가독성 극대화
-      const aside = document.getElementById('left-aside-panel');
-      if (aside) {
-        if (tab === 'batch') {
-          aside.className = 'no-print w-full lg:w-[660px] xl:w-[740px] transition-all duration-200 bg-white border-r border-slate-200 flex flex-col h-auto lg:h-[calc(100vh-61px)] overflow-y-auto';
-        } else {
-          aside.className = 'no-print w-full lg:w-[500px] xl:w-[560px] transition-all duration-200 bg-white border-r border-slate-200 flex flex-col h-auto lg:h-[calc(100vh-61px)] overflow-y-auto';
-        }
+      const drawer = document.getElementById('batch-student-editor-drawer');
+      if (tab !== 'batch' && drawer) {
+        drawer.classList.add('hidden');
+        drawer.classList.remove('flex');
+      } else if (tab === 'batch' && activeBatchStudentId !== null && drawer) {
+        drawer.classList.remove('hidden');
+        drawer.classList.add('flex');
       }
+
+      updateBatchLayoutWidths(tab);
+    }
+
+    function updateBatchLayoutWidths(currentTab = 'batch') {
+      const aside = document.getElementById('left-aside-panel');
+      if (!aside) return;
+      // 학생 목록 테이블이 반·번호·이름·상명으로 간결해졌으므로 일관된 깔끔한 폭 유지
+      aside.className = 'no-print w-full lg:w-[460px] xl:w-[500px] transition-all duration-200 bg-white border-r border-slate-200 flex flex-col h-auto lg:h-[calc(100vh-61px)] overflow-y-auto';
     }
 
     function toggleCustomClassInput(val) {
@@ -1264,6 +1457,7 @@
           classNum: selectedClass,
           name: name,
           awardId: defaultAward.id,
+          customTitle: defaultAward.title,
           customContent: defaultAward.content
         };
       });
@@ -1275,14 +1469,14 @@
       updateClassFilterOptions(classKey);
       renderStudentTable();
 
-      // Sync single editor grade/class inputs as well
-      document.getElementById('input-grade').value = selectedGrade;
-      document.getElementById('input-class').value = selectedClass;
-      updatePreview();
+      // 첫 번째로 추가된 학생을 즉시 우측 개별 상장 편집 패널과 미리보기에 표시
+      if (newStudents.length > 0) {
+        openBatchStudentEditor(newStudents[0].id);
+      }
 
       document.getElementById('batch-names-input').value = '';
       document.getElementById('batch-count-badge').textContent = studentList.length;
-      showToast(`${selectedGrade}학년 ${selectedClass}반 ${newStudents.length}명이 등록되었습니다. (총 ${studentList.length}명)`);
+      showToast(`${selectedGrade}학년 ${selectedClass}반 ${newStudents.length}명이 등록되었습니다. 학생을 클릭하면 오른쪽에서 개별 편집할 수 있습니다.`);
     }
 
     function renderStudentTable() {
@@ -1290,92 +1484,206 @@
       tbody.innerHTML = '';
 
       const filterVal = document.getElementById('batch-filter-class')?.value || 'ALL';
-      const showDetail = document.getElementById('toggle-batch-detail')?.checked ?? true;
       const filteredList = filterVal === 'ALL'
         ? studentList
         : studentList.filter(st => `${st.grade}-${st.classNum}` === filterVal);
 
       if (filteredList.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="3" class="p-8 text-center text-sm text-slate-400">등록된 학생이 없습니다. 상단에서 학년/반을 선택하고 명단을 추가해 주세요.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-sm text-slate-400">등록된 학생이 없습니다. 상단에서 학년/반을 선택하고 명단을 추가해 주세요.</td></tr>';
         return;
       }
 
       filteredList.forEach((st, idx) => {
         const currentAward = awardDatabase.find(a => a.id === st.awardId) || awardDatabase[0];
-        const awardContent = st.customContent || currentAward.content;
+        const displayAwardTitle = st.customTitle || currentAward.title;
+        const isSelected = st.id === activeBatchStudentId;
 
         const tr = document.createElement('tr');
-        tr.className = 'hover:bg-emerald-50/20 transition align-top';
+        tr.className = isSelected
+          ? 'bg-emerald-100/90 font-bold text-emerald-950 ring-2 ring-inset ring-emerald-600 transition cursor-pointer'
+          : 'hover:bg-emerald-50/70 transition cursor-pointer text-slate-800';
+
+        // 행 전체 어디든 클릭하면 우측 개별 상장 편집 패널이 열리고 미리보기가 연동됨 (삭제 버튼 제외)
+        tr.onclick = function(e) {
+          if (e.target.closest('button')) return;
+          openBatchStudentEditor(st.id);
+        };
 
         tr.innerHTML = `
           <!-- 1열: 번호 -->
-          <td class="p-3 text-center font-mono text-sm font-bold text-slate-500 bg-slate-50/70 border-r border-slate-200 align-middle">
+          <td class="py-3 px-2 text-center font-mono text-xs font-bold ${isSelected ? 'text-emerald-800' : 'text-slate-500'} border-r border-slate-200">
             ${idx + 1}
           </td>
 
-          <!-- 2열: 학년/반 + 학생 이름 + 미리보기/삭제 버튼 (세로 정렬로 폭 확보) -->
-          <td class="p-3 border-r border-slate-200 bg-slate-50/30 align-top">
-            <div class="flex flex-col space-y-2">
-              <div class="flex items-center justify-center bg-white rounded-md px-1.5 py-1 border border-slate-300 shadow-sm">
-                <input type="text" value="${st.grade}" onchange="updateStudentClassInfo(${st.id}, 'grade', this.value)" class="w-5 text-center bg-transparent text-xs font-extrabold text-slate-800 outline-none focus:bg-yellow-50 rounded" title="학년 수정">
-                <span class="text-xs text-slate-500 font-medium mr-1">학년</span>
-                <input type="text" value="${st.classNum}" onchange="updateStudentClassInfo(${st.id}, 'classNum', this.value)" class="w-6 text-center bg-transparent text-xs font-extrabold text-blue-700 outline-none focus:bg-yellow-50 rounded" title="반 수정">
-                <span class="text-xs text-slate-500 font-medium">반</span>
-              </div>
+          <!-- 2열: 학급(학년-반) -->
+          <td class="py-3 px-2 text-center text-xs font-bold ${isSelected ? 'text-emerald-900' : 'text-slate-600'} border-r border-slate-200">
+            ${st.grade}학년 ${st.classNum}반
+          </td>
 
-              <input type="text" value="${st.name}" onchange="updateStudentName(${st.id}, this.value)" class="w-full text-center font-extrabold text-base text-slate-900 bg-white border border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-200 rounded-md py-1.5 px-2 outline-none shadow-sm" title="학생 이름 수정">
+          <!-- 3열: 성명 -->
+          <td class="py-3 px-3 text-center font-extrabold text-sm text-slate-900 border-r border-slate-200">
+            ${st.name}
+          </td>
 
-              <div class="grid grid-cols-2 gap-1.5 pt-0.5">
-                <button onclick="previewStudent(${st.id})" class="flex items-center justify-center text-xs font-bold text-emerald-700 hover:text-white bg-emerald-100 hover:bg-emerald-600 py-1.5 rounded-md transition border border-emerald-300" title="오른쪽 상장 화면에서 크게 보기">
-                  <i class="fa-solid fa-eye mr-1"></i>상장보기
-                </button>
-                <button onclick="removeSingleStudent(${st.id})" class="flex items-center justify-center text-xs font-bold text-red-600 hover:text-white bg-red-50 hover:bg-red-500 py-1.5 rounded-md transition border border-red-200" title="학생 삭제">
-                  <i class="fa-solid fa-trash-can mr-1"></i>삭제
-                </button>
-              </div>
+          <!-- 4열: 배정 상명 -->
+          <td class="py-3 px-3 text-sm">
+            <div class="flex items-center justify-between">
+              <span class="font-extrabold ${isSelected ? 'text-emerald-800' : 'text-emerald-700'} truncate">${displayAwardTitle}</span>
+              <i class="fa-solid fa-chevron-right text-[11px] ${isSelected ? 'text-emerald-700' : 'text-slate-300'} ml-1.5"></i>
             </div>
           </td>
 
-          <!-- 3열: 상명 선택 / 선발 기준 / 상장 본문 문구 (줄맞춤·칸맞춤 정렬) -->
-          <td class="p-3 align-top">
-            <div class="space-y-2.5">
-              
-              <!-- 행 1: 배정 상명 -->
-              <div class="grid grid-cols-[72px_1fr] items-center gap-2">
-                <span class="text-xs font-extrabold text-slate-700 bg-slate-200/80 py-2 px-2 rounded-md text-center border border-slate-300">
-                  배정 상명
-                </span>
-                <select onchange="updateStudentAward(${st.id}, this.value)" class="w-full bg-white border-2 border-slate-300 hover:border-emerald-500 rounded-lg px-3 py-2 text-sm font-extrabold text-slate-900 focus:ring-2 focus:ring-emerald-500 outline-none shadow-sm cursor-pointer">
-                  ${awardDatabase.map(a => `<option value="${a.id}" ${a.id === st.awardId ? 'selected' : ''}>${a.title} (${a.criterion})</option>`).join('')}
-                </select>
-              </div>
-
-              <!-- 행 2: 선발 기준 -->
-              <div class="grid grid-cols-[72px_1fr] items-stretch gap-2">
-                <span class="text-xs font-extrabold text-emerald-900 bg-emerald-100 py-2 px-2 rounded-md text-center border border-emerald-300 flex items-center justify-center">
-                  선발 기준
-                </span>
-                <div class="text-sm font-bold text-emerald-950 bg-emerald-50/90 px-3.5 py-2.5 rounded-lg border border-emerald-300 flex items-center leading-snug shadow-sm break-keep">
-                  <i class="fa-solid fa-circle-check text-emerald-600 mr-2 flex-shrink-0 text-base"></i>
-                  <span>${currentAward.criterion}</span>
-                </div>
-              </div>
-
-              <!-- 행 3: 상장 문구 -->
-              ${showDetail ? `
-              <div class="grid grid-cols-[72px_1fr] items-stretch gap-2">
-                <span class="text-xs font-extrabold text-amber-900 bg-amber-100 py-2 px-2 rounded-md text-center border border-amber-300 flex items-center justify-center">
-                  상장 문구
-                </span>
-                <textarea rows="3" onchange="updateStudentCustomContent(${st.id}, this.value)" placeholder="이 학생의 상장 본문 문구 개별 수정" class="w-full bg-amber-50/40 focus:bg-white border border-slate-300 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-200 rounded-lg p-3 text-sm font-medium text-slate-800 leading-relaxed outline-none shadow-sm resize-y break-keep">${awardContent}</textarea>
-              </div>
-              ` : ''}
-
-            </div>
+          <!-- 5열: 삭제 -->
+          <td class="py-3 px-2 text-center">
+            <button onclick="removeSingleStudent(${st.id})" class="text-slate-400 hover:text-red-600 p-1 rounded transition" title="학생 삭제">
+              <i class="fa-solid fa-trash-can text-xs"></i>
+            </button>
           </td>
         `;
         tbody.appendChild(tr);
       });
+    }
+
+    /* -------------------------------------------------------------
+       5-1. SIDE-BY-SIDE INDIVIDUAL EDITOR DRAWER IN BATCH MODE
+    ------------------------------------------------------------- */
+    function openBatchStudentEditor(studentId) {
+      const target = studentList.find(s => s.id === studentId);
+      if (!target) return;
+
+      activeBatchStudentId = studentId;
+      const award = awardDatabase.find(a => a.id === target.awardId) || awardDatabase[0];
+
+      // 1. 우측 추가 개별 상장 편집 패널 표시
+      const drawer = document.getElementById('batch-student-editor-drawer');
+      drawer.classList.remove('hidden');
+      drawer.classList.add('flex');
+      updateBatchLayoutWidths('batch');
+
+      // 2. 드로어 내부 추천 상명 드롭다운 구성
+      const drawerSelect = document.getElementById('drawer-select-award');
+      drawerSelect.innerHTML = awardDatabase.map((a, idx) =>
+        `<option value="${a.id}" ${a.id === target.awardId ? 'selected' : ''}>${idx + 1}. ${a.title} (${a.criterion})</option>`
+      ).join('');
+
+      // 3. 드로어 입력 필드 값 채우기
+      document.getElementById('drawer-student-badge').textContent = `${target.grade}학년 ${target.classNum}반`;
+      document.getElementById('drawer-student-title').textContent = target.name;
+      document.getElementById('drawer-input-grade').value = target.grade || '6';
+      document.getElementById('drawer-input-class').value = target.classNum || '1';
+      document.getElementById('drawer-input-name').value = target.name;
+      document.getElementById('drawer-input-docnum').value = target.docNum;
+      document.getElementById('drawer-criterion-display').textContent = award.criterion;
+      document.getElementById('drawer-input-subtitle').value = target.customTitle || award.title;
+      document.getElementById('drawer-input-content').value = target.customContent || award.content;
+
+      document.getElementById('drawer-input-date').value = document.getElementById('input-date').value;
+      document.getElementById('drawer-input-issuer').value = document.getElementById('input-issuer').value;
+      document.getElementById('drawer-select-font').value = document.getElementById('select-font').value;
+      document.getElementById('drawer-select-border').value = document.getElementById('select-border-style').value;
+
+      // 4. 메인 상장 미리보기(우측 A4 캔버스)에 즉시 반영
+      applyStudentToLiveCertificate(target);
+
+      // 5. 좌측 명단 테이블의 선택 하이라이트 갱신 (포커스 방해 없이 스타일만 업데이트)
+      renderStudentTable();
+    }
+
+    function applyStudentToLiveCertificate(target) {
+      const award = awardDatabase.find(a => a.id === target.awardId) || awardDatabase[0];
+      document.getElementById('input-doc-num').value = target.docNum;
+      document.getElementById('input-grade').value = target.grade || '6';
+      document.getElementById('input-class').value = target.classNum || '1';
+      document.getElementById('input-name').value = target.name;
+      document.getElementById('input-sub-title').value = target.customTitle || award.title;
+      document.getElementById('input-content').value = target.customContent || award.content;
+      document.getElementById('criterion-text').textContent = award.criterion;
+      updatePreview();
+    }
+
+    function syncDrawerToStudent() {
+      if (activeBatchStudentId === null) return;
+      const target = studentList.find(s => s.id === activeBatchStudentId);
+      if (!target) return;
+
+      target.grade = document.getElementById('drawer-input-grade').value.trim() || '1';
+      target.classNum = document.getElementById('drawer-input-class').value.trim() || '1';
+      target.name = document.getElementById('drawer-input-name').value.trim() || '무명';
+      target.docNum = document.getElementById('drawer-input-docnum').value;
+      target.customTitle = document.getElementById('drawer-input-subtitle').value;
+      target.customContent = document.getElementById('drawer-input-content').value;
+
+      document.getElementById('drawer-student-badge').textContent = `${target.grade}학년 ${target.classNum}반`;
+      document.getElementById('drawer-student-title').textContent = target.name;
+
+      // 실시간 상장 미리보기와 좌측 명단 테이블에 즉시 반영
+      applyStudentToLiveCertificate(target);
+      updateClassFilterOptions();
+      renderStudentTable();
+    }
+
+    function changeDrawerAwardPreset(newAwardId) {
+      if (activeBatchStudentId === null) return;
+      const target = studentList.find(s => s.id === activeBatchStudentId);
+      const award = awardDatabase.find(a => a.id === newAwardId);
+      if (!target || !award) return;
+
+      target.awardId = newAwardId;
+      target.customTitle = award.title;
+      target.customContent = award.content;
+
+      document.getElementById('drawer-criterion-display').textContent = award.criterion;
+      document.getElementById('drawer-input-subtitle').value = award.title;
+      document.getElementById('drawer-input-content').value = award.content;
+
+      applyStudentToLiveCertificate(target);
+      renderStudentTable();
+    }
+
+    function resetDrawerStudentContent() {
+      if (activeBatchStudentId === null) return;
+      const target = studentList.find(s => s.id === activeBatchStudentId);
+      if (!target) return;
+      const award = awardDatabase.find(a => a.id === target.awardId) || awardDatabase[0];
+
+      target.customTitle = award.title;
+      target.customContent = award.content;
+      document.getElementById('drawer-input-subtitle').value = award.title;
+      document.getElementById('drawer-input-content').value = award.content;
+
+      applyStudentToLiveCertificate(target);
+      renderStudentTable();
+      showToast('해당 상명의 기본 수여 문구로 복원되었습니다.');
+    }
+
+    function syncCommonFromDrawer() {
+      document.getElementById('input-date').value = document.getElementById('drawer-input-date').value;
+      document.getElementById('input-issuer').value = document.getElementById('drawer-input-issuer').value;
+      updatePreview();
+    }
+
+    function navigateBatchStudent(direction) {
+      const filterVal = document.getElementById('batch-filter-class')?.value || 'ALL';
+      const filteredList = filterVal === 'ALL'
+        ? studentList
+        : studentList.filter(st => `${st.grade}-${st.classNum}` === filterVal);
+
+      if (filteredList.length === 0) return;
+      const curIdx = filteredList.findIndex(s => s.id === activeBatchStudentId);
+      let nextIdx = curIdx + direction;
+      if (nextIdx < 0) nextIdx = filteredList.length - 1;
+      if (nextIdx >= filteredList.length) nextIdx = 0;
+
+      openBatchStudentEditor(filteredList[nextIdx].id);
+    }
+
+    function closeBatchStudentEditor() {
+      activeBatchStudentId = null;
+      const drawer = document.getElementById('batch-student-editor-drawer');
+      drawer.classList.add('hidden');
+      drawer.classList.remove('flex');
+      updateBatchLayoutWidths('batch');
+      renderStudentTable();
     }
 
     function updateStudentClassInfo(studentId, field, value) {
@@ -1383,19 +1691,27 @@
       if (target) {
         target[field] = value.trim() || '1';
         updateClassFilterOptions();
-        renderStudentTable();
+        openBatchStudentEditor(studentId);
       }
     }
 
     function updateStudentName(studentId, newName) {
       const target = studentList.find(s => s.id === studentId);
-      if (target && newName.trim()) {
-        target.name = newName.trim();
+      if (target) {
+        target.name = newName.trim() || '';
+        if (activeBatchStudentId === studentId) {
+          document.getElementById('drawer-input-name').value = target.name;
+          document.getElementById('drawer-student-title').textContent = target.name;
+          applyStudentToLiveCertificate(target);
+        }
       }
     }
 
     function removeSingleStudent(studentId) {
       studentList = studentList.filter(s => s.id !== studentId);
+      if (activeBatchStudentId === studentId) {
+        closeBatchStudentEditor();
+      }
       recalculateDocNumbers();
       updateClassFilterOptions();
       renderStudentTable();
@@ -1410,6 +1726,7 @@
       }
       const [g, c] = filterVal.split('-');
       studentList = studentList.filter(st => `${st.grade}-${st.classNum}` !== filterVal);
+      closeBatchStudentEditor();
       recalculateDocNumbers();
       updateClassFilterOptions('ALL');
       renderStudentTable();
@@ -1423,43 +1740,31 @@
         target.awardId = awardId;
         const award = awardDatabase.find(a => a.id === awardId);
         if (award) {
+          target.customTitle = award.title;
           target.customContent = award.content;
         }
-        renderStudentTable();
+        openBatchStudentEditor(studentId);
       }
     }
 
     function updateStudentCustomContent(studentId, newContent) {
       const target = studentList.find(s => s.id === studentId);
-      if (target && newContent.trim()) {
-        target.customContent = newContent.trim();
-        showToast(`'${target.name}' 학생의 상장 문구가 개별 수정되었습니다.`);
+      if (target) {
+        target.customContent = newContent;
+        if (activeBatchStudentId === studentId) {
+          document.getElementById('drawer-input-content').value = newContent;
+          applyStudentToLiveCertificate(target);
+        }
       }
     }
 
     function previewStudent(studentId) {
-      const target = studentList.find(s => s.id === studentId);
-      if (!target) return;
-
-      document.getElementById('input-name').value = target.name;
-      document.getElementById('input-doc-num').value = target.docNum;
-      document.getElementById('input-grade').value = target.grade || '6';
-      document.getElementById('input-class').value = target.classNum || '1';
-
-      const award = awardDatabase.find(a => a.id === target.awardId);
-      if (award) {
-        document.getElementById('input-sub-title').value = award.title;
-        document.getElementById('input-content').value = target.customContent || award.content;
-        document.getElementById('criterion-text').textContent = award.criterion;
-      }
-
-      updatePreview();
-      switchTab('single');
-      showToast(`${target.grade}학년 ${target.classNum}반 '${target.name}' 학생 상장이 적용되었습니다.`);
+      openBatchStudentEditor(studentId);
     }
 
     function clearAllStudents() {
       studentList = [];
+      closeBatchStudentEditor();
       updateClassFilterOptions('ALL');
       renderStudentTable();
       document.getElementById('batch-count-badge').textContent = '0';
@@ -1561,6 +1866,7 @@
       // Generate HTML for each student using their assigned grade & class
       targetList.forEach(st => {
         const award = awardDatabase.find(a => a.id === st.awardId) || DEFAULT_AWARDS[0];
+        const finalTitle = st.customTitle || award.title;
         const finalContent = st.customContent || award.content;
         const stGrade = st.grade || fallbackGrade;
         const stClass = st.classNum || fallbackClass;
@@ -1592,7 +1898,7 @@
           </div>
 
           <div class="flex justify-between items-end z-10 px-6 my-2">
-            <div class="text-2xl font-bold tracking-widest text-slate-900">${award.title}</div>
+            <div class="text-2xl font-bold tracking-widest text-slate-900">${finalTitle}</div>
             <div class="text-right space-y-1">
               <div class="text-xl font-bold tracking-wider" style="display:${showClass ? 'block' : 'none'}">제 ${stGrade}학년 ${stClass}반</div>
               <div class="text-xl font-bold tracking-widest pt-1">${nameLabel} &nbsp; <span class="font-extrabold">${formattedName}</span></div>
