@@ -293,7 +293,7 @@
           <i class="fa-solid fa-users mr-1.5"></i> 학급 일괄 배정 (<span id="batch-count-badge">0</span>명)
         </button>
         <button id="tab-btn-db" onclick="switchTab('db')" class="flex-1 py-3 px-3 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center justify-center">
-          <i class="fa-solid fa-database mr-1.5"></i> 상장 DB (25종)
+          <i class="fa-solid fa-database mr-1.5"></i> 상장 DB (<span id="db-count-badge">25</span>종)
         </button>
       </div>
 
@@ -722,21 +722,35 @@
         <div id="tab-content-db" class="space-y-4 hidden">
           <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl space-y-3">
             <h3 class="text-xs font-bold text-amber-900 uppercase tracking-wider flex items-center">
-              <i class="fa-solid fa-plus-circle mr-1.5"></i> 새로운 custom 상명 추가하기
+              <i class="fa-solid fa-plus-circle mr-1.5"></i> 새로운 상명 추가하기
             </h3>
             <div class="space-y-2">
-              <input type="text" id="custom-award-title" placeholder="상명 (예: 다정다감상)" class="w-full bg-white border border-amber-300 rounded px-2.5 py-1.5 text-xs outline-none">
-              <input type="text" id="custom-award-criterion" placeholder="선발 기준 (예: 항상 친구에게 친절한 어린이)" class="w-full bg-white border border-amber-300 rounded px-2.5 py-1.5 text-xs outline-none">
-              <textarea id="custom-award-text" rows="2" placeholder="상장 수여 본문 문구" class="w-full bg-white border border-amber-300 rounded px-2.5 py-1.5 text-xs outline-none"></textarea>
-              <button onclick="addCustomAward()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-1.5 rounded text-xs transition">
-                상장 데이터베이스에 추가 저장
+              <input type="text" id="custom-award-title" placeholder="상명 (예: 다정다감상)" class="w-full bg-white border border-amber-300 rounded-lg px-3 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-amber-500">
+              <input type="text" id="custom-award-criterion" placeholder="선발 기준 (예: 항상 친구에게 친절한 어린이)" class="w-full bg-white border border-amber-300 rounded-lg px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-amber-500">
+              <textarea id="custom-award-text" rows="3" placeholder="상장 수여 본문 문구 (예: 위 어린이는 평소 친구들에게 따뜻한 말과 친절한 행동으로...)" class="w-full bg-white border border-amber-300 rounded-lg px-3 py-2 text-xs leading-relaxed outline-none focus:ring-2 focus:ring-amber-500"></textarea>
+              <button onclick="addCustomAward()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 rounded-lg text-xs transition shadow-sm flex items-center justify-center">
+                <i class="fa-solid fa-plus mr-1.5"></i> 상장 데이터베이스에 새 상명 추가
               </button>
             </div>
           </div>
 
-          <div class="space-y-2">
-            <h4 class="text-xs font-bold text-slate-600 px-1">등록되어 있는 상명 전체목록 (25개+)</h4>
-            <div id="db-list-container" class="max-h-[350px] overflow-y-auto space-y-2">
+          <div class="space-y-2.5">
+            <div class="flex items-center justify-between px-1">
+              <h4 class="text-xs font-bold text-slate-700">
+                등록된 상명 목록 (<span id="db-total-count">25</span>종 · 클릭하여 직접 수정/삭제 가능)
+              </h4>
+              <button onclick="resetAwardDatabase()" class="text-[11px] text-slate-500 hover:text-red-600 underline font-medium">
+                기본 25종으로 초기화
+              </button>
+            </div>
+
+            <!-- 검색 필터 -->
+            <div class="relative">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+              <input type="text" id="db-search-input" oninput="renderDBList()" placeholder="상명 또는 선발 기준 검색..." class="w-full bg-slate-50 border border-slate-300 rounded-lg pl-8 pr-3 py-1.5 text-xs outline-none focus:bg-white focus:ring-2 focus:ring-amber-500">
+            </div>
+
+            <div id="db-list-container" class="max-h-[460px] overflow-y-auto space-y-2.5 pr-1">
               <!-- Render DB cards dynamically -->
             </div>
           </div>
@@ -1035,6 +1049,7 @@
     let awardDatabase = [...DEFAULT_AWARDS];
     let studentList = [];
     let activeBatchStudentId = null;
+    let editingAwardId = null;
 
     /* -------------------------------------------------------------
        2. INITIALIZATION & STORAGE
@@ -1047,26 +1062,52 @@
     };
 
     function loadCustomAwards() {
-      const saved = localStorage.getItem('custom_awards');
-      if (saved) {
+      const savedFull = localStorage.getItem('award_database_v2');
+      if (savedFull) {
         try {
-          const parsed = JSON.parse(saved);
-          awardDatabase = [...DEFAULT_AWARDS, ...parsed];
+          const parsed = JSON.parse(savedFull);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            awardDatabase = parsed;
+            return;
+          }
         } catch(e) {
           console.error(e);
         }
       }
+      // 이전 버전 호환
+      const savedLegacy = localStorage.getItem('custom_awards');
+      if (savedLegacy) {
+        try {
+          const parsed = JSON.parse(savedLegacy);
+          awardDatabase = [...DEFAULT_AWARDS.map(a => ({...a})), ...parsed];
+        } catch(e) {
+          console.error(e);
+        }
+      } else {
+        awardDatabase = DEFAULT_AWARDS.map(a => ({...a}));
+      }
+    }
+
+    function saveAwardDatabase() {
+      localStorage.setItem('award_database_v2', JSON.stringify(awardDatabase));
+      const badge = document.getElementById('db-count-badge');
+      const total = document.getElementById('db-total-count');
+      if (badge) badge.textContent = awardDatabase.length;
+      if (total) total.textContent = awardDatabase.length;
     }
 
     function populatePresetDropdown() {
       const select = document.getElementById('preset-select');
+      const currentVal = select.value;
       select.innerHTML = '';
       awardDatabase.forEach((award, index) => {
         const opt = document.createElement('option');
         opt.value = award.id;
         opt.textContent = `${index + 1}. ${award.title} (${award.criterion})`;
+        if (award.id === currentVal) opt.selected = true;
         select.appendChild(opt);
       });
+      saveAwardDatabase();
     }
 
     /* -------------------------------------------------------------
@@ -1932,25 +1973,194 @@
     }
 
     /* -------------------------------------------------------------
-       7. CUSTOM AWARD DATABASE MANAGEMENT
+       7. CUSTOM AWARD DATABASE MANAGEMENT (수정 / 삭제 / 추가 완벽 지원)
     ------------------------------------------------------------- */
     function renderDBList() {
       const container = document.getElementById('db-list-container');
+      const searchKeyword = (document.getElementById('db-search-input')?.value || '').trim().toLowerCase();
       container.innerHTML = '';
 
-      awardDatabase.forEach((award, idx) => {
+      const badge = document.getElementById('db-count-badge');
+      const total = document.getElementById('db-total-count');
+      if (badge) badge.textContent = awardDatabase.length;
+      if (total) total.textContent = awardDatabase.length;
+
+      const filtered = awardDatabase.filter(a =>
+        !searchKeyword ||
+        a.title.toLowerCase().includes(searchKeyword) ||
+        a.criterion.toLowerCase().includes(searchKeyword) ||
+        a.content.toLowerCase().includes(searchKeyword)
+      );
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="p-6 text-center text-xs text-slate-400 bg-white rounded-lg border border-slate-200">검색 조건에 맞는 상명이 없습니다.</div>`;
+        return;
+      }
+
+      filtered.forEach((award) => {
+        const realIdx = awardDatabase.findIndex(a => a.id === award.id);
+        const isEditing = editingAwardId === award.id;
         const item = document.createElement('div');
-        item.className = 'bg-white p-3 rounded-lg border border-slate-200 hover:border-amber-300 transition text-xs space-y-1';
-        item.innerHTML = `
-          <div class="flex justify-between items-center">
-            <span class="font-bold text-slate-800">${idx + 1}. ${award.title}</span>
-            <span class="text-[10px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded">기준</span>
-          </div>
-          <p class="text-slate-500 text-[11px]">${award.criterion}</p>
-          <p class="text-slate-700 bg-slate-50 p-1.5 rounded mt-1">${award.content}</p>
-        `;
+
+        if (isEditing) {
+          item.className = 'bg-amber-50/90 p-3.5 rounded-xl border-2 border-amber-500 shadow-md text-xs space-y-2.5 transition';
+          item.innerHTML = `
+            <div class="flex justify-between items-center border-b border-amber-200 pb-1.5">
+              <span class="font-extrabold text-amber-900 flex items-center">
+                <i class="fa-solid fa-pen-to-square mr-1.5"></i> ${realIdx + 1}번 상명 정보 수정 중
+              </span>
+              <span class="text-[11px] text-amber-700 font-semibold">수정 후 저장을 누르세요</span>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">상명</label>
+              <input type="text" id="edit-db-title-${award.id}" value="${award.title.replace(/"/g, '&quot;')}" class="w-full bg-white border border-amber-400 rounded-lg px-2.5 py-1.5 text-xs font-bold text-slate-900 outline-none focus:ring-2 focus:ring-amber-500">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">선발 기준</label>
+              <input type="text" id="edit-db-criterion-${award.id}" value="${award.criterion.replace(/"/g, '&quot;')}" class="w-full bg-white border border-amber-400 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-amber-500">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">상장 수여 본문 문구</label>
+              <textarea id="edit-db-content-${award.id}" rows="3" class="w-full bg-white border border-amber-400 rounded-lg p-2.5 text-xs text-slate-900 leading-relaxed outline-none focus:ring-2 focus:ring-amber-500">${award.content}</textarea>
+            </div>
+            <div class="flex justify-end space-x-2 pt-1">
+              <button onclick="cancelEditAward()" class="px-3 py-1.5 rounded-lg bg-white border border-slate-300 hover:bg-slate-100 text-slate-600 font-bold text-xs transition">
+                취소
+              </button>
+              <button onclick="saveEditedAward('${award.id}')" class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition flex items-center">
+                <i class="fa-solid fa-check mr-1"></i> 수정 저장
+              </button>
+            </div>
+          `;
+        } else {
+          item.className = 'bg-white p-3.5 rounded-xl border border-slate-200 hover:border-amber-400 transition text-xs space-y-1.5 shadow-sm';
+          item.innerHTML = `
+            <div class="flex justify-between items-center">
+              <div class="flex items-center space-x-1.5">
+                <span class="font-extrabold text-sm text-slate-800">${realIdx + 1}. ${award.title}</span>
+                ${String(award.id).startsWith('custom_') ? '<span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-1.5 py-0.5 rounded">추가됨</span>' : ''}
+              </div>
+              <div class="flex items-center space-x-1">
+                <button onclick="applyAwardFromDB('${award.id}')" class="text-[11px] bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold px-2 py-1 rounded border border-emerald-200 transition" title="현재 상장 미리보기에 바로 적용">
+                  적용
+                </button>
+                <button onclick="startEditAward('${award.id}')" class="text-[11px] bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold px-2 py-1 rounded border border-amber-200 transition" title="상명·기준·문구 수정">
+                  <i class="fa-solid fa-pen mr-0.5"></i> 수정
+                </button>
+                <button onclick="deleteAwardFromDB('${award.id}')" class="text-[11px] bg-red-50 hover:bg-red-100 text-red-600 font-bold px-2 py-1 rounded border border-red-200 transition" title="삭제">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              </div>
+            </div>
+            <p class="text-emerald-800 font-semibold text-xs bg-emerald-50/70 px-2 py-1 rounded border border-emerald-100">
+              <strong class="text-emerald-950">기준:</strong> ${award.criterion}
+            </p>
+            <p class="text-slate-700 bg-slate-50 p-2 rounded-lg leading-relaxed break-keep border border-slate-100">${award.content}</p>
+          `;
+        }
         container.appendChild(item);
       });
+    }
+
+    function startEditAward(awardId) {
+      editingAwardId = String(awardId);
+      renderDBList();
+    }
+
+    function cancelEditAward() {
+      editingAwardId = null;
+      renderDBList();
+    }
+
+    function saveEditedAward(awardId) {
+      const target = awardDatabase.find(a => String(a.id) === String(awardId));
+      if (!target) return;
+
+      const newTitle = document.getElementById(`edit-db-title-${awardId}`).value.trim();
+      const newCriterion = document.getElementById(`edit-db-criterion-${awardId}`).value.trim();
+      const newContent = document.getElementById(`edit-db-content-${awardId}`).value.trim();
+
+      if (!newTitle || !newContent) {
+        showToast('상명과 수여 본문 문구는 비워둘 수 없습니다.');
+        return;
+      }
+
+      const oldTitle = target.title;
+      const oldContent = target.content;
+
+      target.title = newTitle;
+      target.criterion = newCriterion || `${newTitle} 우수 어린이`;
+      target.content = newContent;
+
+      // 학급 일괄 배정 명단 중 해당 상명을 사용 중이던 학생 데이터도 최신화
+      studentList.forEach(st => {
+        if (String(st.awardId) === String(awardId)) {
+          if (!st.customTitle || st.customTitle === oldTitle) st.customTitle = newTitle;
+          if (!st.customContent || st.customContent === oldContent) st.customContent = newContent;
+        }
+      });
+
+      editingAwardId = null;
+      saveAwardDatabase();
+      populatePresetDropdown();
+      renderDBList();
+      renderStudentTable();
+
+      // 현재 선택된 샘플 프리셋이거나 열려 있는 학생이 해당 상명이면 즉시 미리보기 갱신
+      if (String(document.getElementById('preset-select').value) === String(awardId)) {
+        applyPreset(String(awardId));
+      }
+      if (activeBatchStudentId !== null) {
+        openBatchStudentEditor(activeBatchStudentId);
+      }
+
+      showToast(`'${newTitle}' 상장 DB 정보가 수정 저장되었습니다.`);
+    }
+
+    function deleteAwardFromDB(awardId) {
+      if (awardDatabase.length <= 1) {
+        showToast('최소 1개 이상의 상명이 남아있어야 합니다.');
+        return;
+      }
+      const target = awardDatabase.find(a => String(a.id) === String(awardId));
+      const deletedTitle = target ? target.title : '선택한 상명';
+
+      awardDatabase = awardDatabase.filter(a => String(a.id) !== String(awardId));
+      if (editingAwardId === String(awardId)) editingAwardId = null;
+
+      // 삭제된 상명을 배정받았던 학생들은 첫 번째 상명으로 안전하게 대체
+      const fallback = awardDatabase[0];
+      studentList.forEach(st => {
+        if (String(st.awardId) === String(awardId)) {
+          st.awardId = fallback.id;
+          st.customTitle = fallback.title;
+          st.customContent = fallback.content;
+        }
+      });
+
+      saveAwardDatabase();
+      populatePresetDropdown();
+      renderDBList();
+      renderStudentTable();
+      showToast(`'${deletedTitle}' 항목이 상장 DB에서 삭제되었습니다.`);
+    }
+
+    function applyAwardFromDB(awardId) {
+      document.getElementById('preset-select').value = String(awardId);
+      applyPreset(String(awardId));
+      showToast('선택한 상명이 우측 상장 미리보기에 적용되었습니다.');
+    }
+
+    function resetAwardDatabase() {
+      awardDatabase = DEFAULT_AWARDS.map(a => ({...a}));
+      editingAwardId = null;
+      localStorage.removeItem('award_database_v2');
+      localStorage.removeItem('custom_awards');
+      populatePresetDropdown();
+      renderDBList();
+      renderStudentTable();
+      applyPreset(awardDatabase[0].id);
+      showToast('상장 데이터베이스가 초기 25종 상태로 복원되었습니다.');
     }
 
     function addCustomAward() {
@@ -1970,11 +2180,9 @@
         content: content
       };
 
-      awardDatabase.push(newAward);
+      awardDatabase.unshift(newAward);
 
-      // Save user custom additions to localStorage
-      const customOnly = awardDatabase.filter(a => a.id.startsWith('custom_'));
-      localStorage.setItem('custom_awards', JSON.stringify(customOnly));
+      saveAwardDatabase();
 
       // Clear Form & Refresh UI
       document.getElementById('custom-award-title').value = '';
@@ -1983,8 +2191,12 @@
 
       populatePresetDropdown();
       renderDBList();
+      renderStudentTable();
+      if (activeBatchStudentId !== null) {
+        openBatchStudentEditor(activeBatchStudentId);
+      }
 
-      showToast(`'${title}' 상명이 성공적으로 추가되었습니다.`);
+      showToast(`'${title}' 상명이 추가되었습니다. 목록에서 언제든 수정할 수 있습니다.`);
     }
   </script>
 </body>
